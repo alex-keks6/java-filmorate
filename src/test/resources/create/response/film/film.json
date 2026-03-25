@@ -1,0 +1,7 @@
+{
+  "id": 1,
+  "name": "Film1",
+  "description": "Test film1 description",
+  "releaseDate": "1990-01-01",
+  "duration": 210
+}
