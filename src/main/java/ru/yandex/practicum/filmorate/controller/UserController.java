@@ -35,7 +35,8 @@ public class UserController {
             log.debug(errorMessage);
             throw new ValidationException(errorMessage);
         }
-        if (user.getName().isBlank()) {
+        // Если name пустое, что может быть, то записываем в него login. Вынести это в валидацию, думаю, не надо
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.trace("Поле name у добавляемого пользователя пустое. Присвоено значение поля login");
         }

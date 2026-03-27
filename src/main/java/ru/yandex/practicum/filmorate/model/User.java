@@ -17,7 +17,6 @@ public class User {
     private String email;
     @NotBlank(groups = {BaseInfo.class, AdvanceInfo.class})
     private String login;
-    @NotNull(groups = {BaseInfo.class, AdvanceInfo.class})
     private String name;
     @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
     private LocalDate birthday;
