@@ -1,20 +1,24 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.group.AdvanceInfo;
+import ru.yandex.practicum.filmorate.group.BaseInfo;
 
 import java.time.LocalDate;
 
 @Data
 public class User {
+    @NotNull(groups = AdvanceInfo.class)
+    @Positive(groups = AdvanceInfo.class)
     private Long id;
-    @Email
+    @NotNull(groups = BaseInfo.class)
+    @Email(groups = {BaseInfo.class, AdvanceInfo.class})
     private String email;
-    @NotBlank
+    @NotBlank(groups = {BaseInfo.class, AdvanceInfo.class})
     private String login;
+    @NotNull(groups = {BaseInfo.class, AdvanceInfo.class})
     private String name;
-    @PastOrPresent
+    @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
     private LocalDate birthday;
 }

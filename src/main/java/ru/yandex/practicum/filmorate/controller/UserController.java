@@ -2,9 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.group.AdvanceInfo;
+import ru.yandex.practicum.filmorate.group.BaseInfo;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -23,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public User create(@Validated(BaseInfo.class) @RequestBody User user) {
         // валидация
         log.info("Создание нового пользователя {}", user);
         log.trace("Начало валидации создания нового пользователя");
@@ -32,7 +35,7 @@ public class UserController {
             log.debug(errorMessage);
             throw new ValidationException(errorMessage);
         }
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.trace("Поле name у добавляемого пользователя пустое. Присвоено значение поля login");
         }
@@ -41,7 +44,7 @@ public class UserController {
         // создание
         user.setId(getNextId());
         users.put(user.getId(), user);
-        log.info("Создан новый пользователь с id = " + user.getId());
+        log.info("Создан новый пользователь с id = {}", user.getId());
 
         return user;
     }
@@ -56,15 +59,10 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User newUser) {
+    public User update(@Validated(AdvanceInfo.class) @RequestBody User newUser) {
         // валидация
         log.info("Обновление данных о пользователе данными {}", newUser);
         log.trace("Начало валидации данных для обновления пользователя");
-        if (newUser.getId() == null) {
-            String errorMessage = "id пользователя должен быть указан для обновления данных";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
         if (!users.containsKey(newUser.getId())) {
             String errorMessage = "Пользователь с id = " + newUser.getId() + " для обновления не найден";
             log.debug(errorMessage);
@@ -80,16 +78,19 @@ public class UserController {
         // обновление данных
         User oldUser = users.get(newUser.getId());
         oldUser.setName(newUser.getName());
-        oldUser.setEmail(newUser.getEmail());
+        // чтобы не записать в email null, так как при обновлении email необязателен
+        if (newUser.getEmail() != null) {
+            oldUser.setEmail(newUser.getEmail());
+        }
         oldUser.setLogin(newUser.getLogin());
-        if (newUser.getName() == null || newUser.getName().isBlank()) {
+        if (newUser.getName().isBlank()) {
             oldUser.setName(newUser.getLogin());
         } else {
             oldUser.setName(newUser.getName());
 
         }
         oldUser.setBirthday(newUser.getBirthday());
-        log.info("Обновлены данные о пользователе с id = " + oldUser.getId());
+        log.info("Обновлены данные о пользователе с id = {}", oldUser.getId());
 
         return oldUser;
     }

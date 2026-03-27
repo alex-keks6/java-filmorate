@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.group.AdvanceInfo;
+import ru.yandex.practicum.filmorate.group.BaseInfo;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
+    private final LocalDate movieBirthday = LocalDate.of(1895, 12, 28);
 
     @GetMapping
     public Collection<Film> getAll() {
@@ -24,11 +27,11 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@Validated(BaseInfo.class) @RequestBody Film film) {
         // валидация
         log.info("Создание нового фильма {}", film);
         log.trace("Начало валидации создания нового фильма");
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate().isBefore(movieBirthday)) {
             String errorMessage = "Некорректная дата релиза фильма: " + film.getReleaseDate() +
                     ". Релиз не может быть раньше дня рождения кино (28.12.1895)";
             log.debug(errorMessage);
@@ -38,7 +41,7 @@ public class FilmController {
         // создание
         film.setId(getNextId());
         films.put(film.getId(), film);
-        log.info("Создан новый фильм с id = " + film.getId());
+        log.info("Создан новый фильм с id = {}", film.getId());
 
         return film;
     }
@@ -53,21 +56,16 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film newFilm) {
+    public Film update(@Validated(AdvanceInfo.class) @RequestBody Film newFilm) {
         // валидация
         log.info("Обновление данных о фильме данными {}", newFilm);
         log.trace("Начало валидации данных для обновления фильма");
-        if (newFilm.getId() == null) {
-            String errorMessage = "id фильма должен быть указан для обновления данных";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
         if (!films.containsKey(newFilm.getId())) {
             String errorMessage = "Фильм с id = " + newFilm.getId() + " для обновления не найден";
             log.debug(errorMessage);
             throw new NotFoundException(errorMessage);
         }
-        if (newFilm.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (newFilm.getReleaseDate().isBefore(movieBirthday)) {
             String errorMessage = "Некорректная дата релиза фильма: " + newFilm.getReleaseDate() +
                     ". Релиз не может быть раньше дня рождения кино (28.12.1895)";
             log.debug(errorMessage);

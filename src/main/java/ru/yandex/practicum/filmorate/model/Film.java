@@ -1,22 +1,23 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.group.AdvanceInfo;
+import ru.yandex.practicum.filmorate.group.BaseInfo;
 
 import java.time.LocalDate;
 
 @Data
 public class Film {
+    @NotNull(groups = AdvanceInfo.class)
+    @Positive(groups = AdvanceInfo.class)
     private Long id;
-    @NotBlank
+    @NotBlank(groups = {BaseInfo.class, AdvanceInfo.class})
     private String name;
-    @Size(max = 200)
+    @Size(max = 200, groups = {BaseInfo.class, AdvanceInfo.class})
     private String description;
-    @PastOrPresent
+    @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
     private LocalDate releaseDate;
-    @Positive
+    @Positive(groups = {BaseInfo.class, AdvanceInfo.class})
     private Long duration;
 }
