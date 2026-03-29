@@ -8,16 +8,16 @@ import ru.yandex.practicum.filmorate.group.BaseInfo;
 import java.time.LocalDate;
 
 @Data
-public class Film {
+public class User {
     @NotNull(groups = AdvanceInfo.class)
     @Positive(groups = AdvanceInfo.class)
     private Long id;
+    @NotNull(groups = BaseInfo.class)
+    @Email(groups = {BaseInfo.class, AdvanceInfo.class})
+    private String email;
     @NotBlank(groups = {BaseInfo.class, AdvanceInfo.class})
+    private String login;
     private String name;
-    @Size(max = 200, groups = {BaseInfo.class, AdvanceInfo.class})
-    private String description;
     @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
-    private LocalDate releaseDate;
-    @Positive(groups = {BaseInfo.class, AdvanceInfo.class})
-    private Long duration;
+    private LocalDate birthday;
 }
