@@ -28,11 +28,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private Long getNextId() {
-        long maxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
+        long maxId = users.keySet().stream().mapToLong(id -> id).max().orElse(0);
         return ++maxId;
     }
 
@@ -69,9 +65,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     public List<User> getFriendsById(Long id) {
         validateExistUserById(id);
-        return users.get(id).getFriends().stream()
-                .map(this::getUserById)
-                .toList();
+        return users.get(id).getFriends().stream().map(this::getUserById).toList();
     }
 
     public void validateExistUserById(Long id) {
