@@ -15,4 +15,6 @@ public interface UserStorage {
     User getUserById(Long id);
 
     List<User> getFriendsById(Long id);
+
+    void validateExistUserById(Long id);
 }

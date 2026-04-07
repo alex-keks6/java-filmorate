@@ -52,7 +52,6 @@ public class UserService {
     public User addFriend(Long userId, Long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        log.info("Пользователь с userId = {} добавил в друзья пользователя с friendId = {}", userId, friendId);
         if (user.getFriends().add(friendId)) {
             log.info("Пользователь с userId = {} добавил в друзья пользователя с friendId = {}", userId, friendId);
         } else {

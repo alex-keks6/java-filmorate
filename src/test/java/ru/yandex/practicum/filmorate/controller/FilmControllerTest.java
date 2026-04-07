@@ -60,7 +60,7 @@ public class FilmControllerTest {
             mockMvc.perform(MockMvcRequestBuilders.put(PATH)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
-                    .andExpect(MockMvcResultMatchers.status().is(500));
+                    .andExpect(MockMvcResultMatchers.status().is(400));
         } catch (Exception exp) {
             Assertions.assertEquals("Request processing failed: " +
                     "ru.yandex.practicum.filmorate.exception.ValidationException: " +
