@@ -13,4 +13,5 @@ public interface FilmStorage {
 
     Film getFilmById(Long id);
 
+    boolean isFilmExist(Long id);
 }

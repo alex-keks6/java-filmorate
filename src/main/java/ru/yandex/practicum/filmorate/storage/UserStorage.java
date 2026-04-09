@@ -16,5 +16,5 @@ public interface UserStorage {
 
     List<User> getFriendsById(Long id);
 
-    void validateExistUserById(Long id);
+    boolean isUserExist(Long id);
 }

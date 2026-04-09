@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
@@ -22,5 +23,6 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(groups = {BaseInfo.class, AdvanceInfo.class})
     private Long duration;
+    @JsonIgnore
     private Set<Long> likes = new HashSet<>();
 }

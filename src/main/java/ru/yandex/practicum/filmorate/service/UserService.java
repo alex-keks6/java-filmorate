@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -24,29 +23,24 @@ public class UserService {
 
     public User create(User user) {
         log.info("Создание нового пользователя {}", user);
-        log.trace("Начало валидации создания нового пользователя");
-        validate(user);
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Поле name у добавляемого пользователя пустое. Присвоено значение поля login");
         }
-        log.trace("Валидация создания нового пользователя успешно пройдена");
         return userStorage.create(user);
     }
 
     public User update(User newUser) {
-        log.info("Обновление данных о пользователе данными {}", newUser);
-        log.trace("Начало валидации данных для обновления пользователя");
-        validate(newUser);
-        return userStorage.update(newUser);
-    }
-
-    private void validate(User user) {
-        if (user.getLogin().contains(" ")) {
-            String errorMessage = "Логин не должен содержать пробелов";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
+        User oldUser = userStorage.getUserById(newUser.getId());
+        if (newUser.getEmail() != null) {
+            oldUser.setEmail(newUser.getEmail());
         }
+        if (newUser.getName().isBlank()) {
+            oldUser.setName(newUser.getLogin());
+        } else {
+            oldUser.setName(newUser.getName());
+        }
+        return userStorage.update(newUser);
     }
 
     public User addFriend(Long userId, Long friendId) {
@@ -96,5 +90,9 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userStorage.getUserById(id);
+    }
+
+    public boolean isUserExist(Long id) {
+        return userStorage.isUserExist(id);
     }
 }
