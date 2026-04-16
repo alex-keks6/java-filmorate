@@ -54,7 +54,18 @@ public class UserController {
     public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userExist(id);
         userExist(friendId);
-        usersBeFriends(id, friendId);
+        if (isUsersBeFriends(id, friendId)) {
+            String errorMessage = "У пользователя с id = " + id
+                    + " в друзьях уже имеется пользователь с id = " + friendId + ".";
+            log.debug(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
+        if (userService.isFriendRequestExist(friendId, id)) {
+            String errorMessage = "У пользователя с id = " + friendId
+                    + " уже имеется заявка в друзья от пользователя с id = " + id + ".";
+            log.debug(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
         userService.addFriend(id, friendId);
     }
 
@@ -62,7 +73,12 @@ public class UserController {
     public void acceptFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userExist(id);
         userExist(friendId);
-        usersBeFriends(id, friendId);
+        if (!userService.isFriendRequestExist(id, friendId)) {
+            String errorMessage = "У пользователя с id = " + id
+                    + " нет заявки в друзья от пользователя с id = " + friendId + ".";
+            log.debug(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
         userService.acceptFriend(id, friendId);
     }
 
@@ -70,6 +86,12 @@ public class UserController {
     public void removeFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userExist(id);
         userExist(friendId);
+        if (!isUsersBeFriends(id, friendId)) {
+            String errorMessage = "У пользователя с id = " + id
+                    + " в друзьях нет пользователя с id = " + friendId + ".";
+            log.debug(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
         userService.removeFriend(id, friendId);
     }
 
@@ -102,12 +124,7 @@ public class UserController {
         }
     }
 
-    private void usersBeFriends(Long userId, Long friendId) {
-        if (userService.getFriendsById(userId).contains(userService.getUserById(friendId))) {
-            String errorMessage = "У пользователя с id = " + userId
-                    + " в друзьях уже имеется пользователь с id = " + friendId + ".";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
+    private boolean isUsersBeFriends(Long userId, Long friendId) {
+        return userService.getFriendsById(userId).contains(userService.getUserById(friendId));
     }
 }

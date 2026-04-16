@@ -27,6 +27,8 @@ public class Film {
     private Long duration;
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
+    @NotNull(groups = BaseInfo.class)
     private Set<Genre> genres = new HashSet<>();
+    @NotNull(groups = BaseInfo.class)
     private Rating rating;
 }

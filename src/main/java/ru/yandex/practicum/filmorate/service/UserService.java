@@ -47,45 +47,27 @@ public class UserService {
 
     public void addFriend(Long userId, Long friendId) {
         User friend = userStorage.getUserById(friendId);
-        if (!friend.getFriends().containsKey(userId)) {
-            friend.getFriends().put(userId, FriendStatus.UNCONFIRMED);
-            log.info("Пользователь с userId = {} отправил заявку в друзья пользователю с friendId = {}",
-                    userId, friendId);
-        } else {
-            log.debug("Заявка в друзья от пользователя с userId = {} для друга с friendId = {} уже имеется",
-                    userId, friendId);
-        }
+        friend.getFriends().put(userId, FriendStatus.UNCONFIRMED);
+        log.info("Пользователь с userId = {} отправил заявку в друзья пользователю с friendId = {}",
+                userId, friendId);
     }
 
     public void acceptFriend(Long userId, Long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        if (user.getFriends().containsKey(friendId) && user.getFriends().get(friendId) == FriendStatus.UNCONFIRMED) {
-            user.getFriends().put(friendId, FriendStatus.CONFIRMED);
-            friend.getFriends().put(userId, FriendStatus.CONFIRMED);
-            log.info("Пользователь с userId = {} принял заявку в друзья от пользователя с friendId = {}",
-                    userId, friendId);
-        } else {
-            log.debug("Заявки в друзья у пользователя с userId = {} от друга с friendId = {} нет",
-                    userId, friendId);
-        }
+        user.getFriends().put(friendId, FriendStatus.CONFIRMED);
+        friend.getFriends().put(userId, FriendStatus.CONFIRMED);
+        log.info("Пользователь с userId = {} принял заявку в друзья от пользователя с friendId = {}",
+                userId, friendId);
     }
 
     public void removeFriend(Long userId, Long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        if (user.getFriends().containsKey(friendId) && user.getFriends().get(friendId) == FriendStatus.CONFIRMED) {
-            user.getFriends().remove(friendId);
-            log.info("Пользователь с userId = {} удалил из друзей пользователя с friendId = {}", userId, friendId);
-        } else {
-            log.debug("Удаление у пользователя с userId = {} друга с friendId = {} не произошло", userId, friendId);
-        }
-        if (friend.getFriends().containsKey(userId) && friend.getFriends().get(userId) == FriendStatus.CONFIRMED) {
-            friend.getFriends().remove(userId);
-            log.info("Пользователь с userId = {} удалил из друзей пользователя с friendId = {}", friendId, userId);
-        } else {
-            log.debug("Удаление у пользователя с userId = {} друга с friendId = {} не произошло", friendId, userId);
-        }
+        user.getFriends().remove(friendId);
+        log.info("Пользователь с userId = {} удалил из друзей пользователя с friendId = {}", userId, friendId);
+        friend.getFriends().remove(userId);
+        log.info("Пользователь с userId = {} удалил из друзей пользователя с friendId = {}", friendId, userId);
     }
 
     public List<User> getFriendsById(Long id) {
@@ -110,5 +92,11 @@ public class UserService {
 
     public boolean isUserExist(Long id) {
         return userStorage.isUserExist(id);
+    }
+
+    public boolean isFriendRequestExist(Long userId, Long friendId) {
+        Map<Long, FriendStatus> userFriends = userStorage.getUserById(userId).getFriends();
+        return (userFriends.containsKey(friendId)
+                && userFriends.get(friendId) == FriendStatus.UNCONFIRMED);
     }
 }
