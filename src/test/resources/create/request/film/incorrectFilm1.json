@@ -2,5 +2,10 @@
   "name": "",
   "description": "Test film1 description",
   "releaseDate": "1990-01-01",
-  "duration": 210
+  "duration": 210,
+  "genres": [
+    "COMEDY",
+    "ACTION"
+  ],
+  "rating": "NC_17"
 }

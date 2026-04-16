@@ -3,5 +3,10 @@
   "name": "Film1",
   "description": "Test film1 description",
   "releaseDate": "1790-01-01",
-  "duration": 210
+  "duration": 210,
+  "genres": [
+    "COMEDY",
+    "ACTION"
+  ],
+  "rating": "NC_17"
 }

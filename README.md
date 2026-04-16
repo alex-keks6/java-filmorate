@@ -124,4 +124,4 @@ ER-диаграмма проектируемой базы данных для с
 - `DELETE /films/{id}/like/{userId}`  — удаление лайка пользователем у фильма.
 - `GET /films/popular?count={count}` — список из первых count фильмов по количеству лайков. 
 Если значение параметра count не задано, вернутся первые 10.
-- `PUT /users/{id}/friends/accept/{friendId}` — принятие заявки в друзья от пользователя с friendId пользователем с id.
+- `PUT /users/{id}/friends/requests/{friendId}` — принятие заявки в друзья от пользователя с friendId пользователем с id.
