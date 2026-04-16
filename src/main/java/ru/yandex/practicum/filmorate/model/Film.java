@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.enums.Genre;
+import ru.yandex.practicum.filmorate.enums.Rating;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
 import ru.yandex.practicum.filmorate.group.BaseInfo;
 
@@ -25,4 +27,6 @@ public class Film {
     private Long duration;
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
+    private Rating rating;
 }

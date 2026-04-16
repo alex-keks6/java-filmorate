@@ -51,10 +51,19 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userExist(id);
         userExist(friendId);
-        return userService.addFriend(id, friendId);
+        usersBeFriends(id, friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @PutMapping("/{id}/friends/accept/{friendId}")
+    public void acceptFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        userExist(id);
+        userExist(friendId);
+        usersBeFriends(id, friendId);
+        userService.acceptFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
@@ -90,6 +99,15 @@ public class UserController {
             String errorMessage = "Пользователь с id = " + id + " не найден";
             log.debug(errorMessage);
             throw new NotFoundException(errorMessage);
+        }
+    }
+
+    private void usersBeFriends(Long userId, Long friendId) {
+        if (userService.getFriendsById(userId).contains(userService.getUserById(friendId))) {
+            String errorMessage = "У пользователя с id = " + userId
+                    + " в друзьях уже имеется пользователь с id = " + friendId + ".";
+            log.debug(errorMessage);
+            throw new ValidationException(errorMessage);
         }
     }
 }

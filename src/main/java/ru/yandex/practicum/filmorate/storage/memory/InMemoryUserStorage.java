@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.enums.FriendStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -36,7 +37,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public List<User> getFriendsById(Long id) {
-        return users.get(id).getFriends().stream().map(this::getUserById).toList();
+        return users.get(id).getFriends().entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() == FriendStatus.CONFIRMED)
+                .map(Map.Entry::getKey)
+                .map(this::getUserById)
+                .toList();
     }
 
     public boolean isUserExist(Long id) {
