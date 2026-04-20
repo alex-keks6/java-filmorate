@@ -1,5 +1,4 @@
 {
-  "id": 1,
   "name": "Film1",
   "description": "Test film1 description",
   "releaseDate": "1790-01-01",
@@ -8,5 +7,5 @@
     1,
     2
   ],
-  "rating": 4
+  "rating": 1
 }
