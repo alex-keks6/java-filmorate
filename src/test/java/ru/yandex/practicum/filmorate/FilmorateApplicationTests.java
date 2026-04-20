@@ -91,12 +91,13 @@ class FilmorateApplicationTests {
 
     @Test
     public void testGetFilmById() {
+
         Film film = new Film();
         film.setName("Film1");
         film.setDescription("Very good film!");
         film.setReleaseDate(LocalDate.of(1990, 1, 1));
         film.setDuration(199L);
-        film.setGenres(new TreeSet<>(List.of(new Genre(1L), new Genre(2L))));
+        film.setGenres(new TreeSet<>());
         film.setMpa(new Mpa(1L));
         filmStorage.create(film);
         film = filmStorage.getFilmById(1L);
