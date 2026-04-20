@@ -4,8 +4,8 @@
   "releaseDate": "1990-01-01",
   "duration": 210,
   "genres": [
-    "COMEDY",
-    "ACTION"
+    1,
+    2
   ],
-  "rating": "NC_17"
+  "rating": 1
 }
