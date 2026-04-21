@@ -80,7 +80,6 @@ public class DbUserStorage implements UserStorage {
             if (user == null) {
                 throw new EmptyResultDataAccessException(1);
             }
-            setFriends(user);
             return user;
         } catch (EmptyResultDataAccessException ignored) {
             throw new NotFoundException("Пользователь с id = " + id + " не найден");
@@ -122,15 +121,6 @@ public class DbUserStorage implements UserStorage {
             throw new InternalServerException("Не удалось удалить из друзей у пользователя " +
                     "с userId = " + userId + " пользователя с friendId = " + friendId + ".");
         }
-    }
-
-    private void setFriends(User user) {
-        String query = "SELECT f.friend_id\n" +
-                " FROM users AS u\n" +
-                " JOIN friendship AS f ON u.user_id = f.user_id\n" +
-                " WHERE u.user_id = ? AND is_accept = TRUE";
-        Set<Long> friendsSet = new HashSet<>(jdbc.queryForList(query, Long.class, user.getId()));
-        user.setFriends(friendsSet);
     }
 }
 

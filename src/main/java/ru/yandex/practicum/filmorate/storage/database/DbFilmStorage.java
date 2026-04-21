@@ -10,15 +10,15 @@ import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.database.mappers.FilmRowMapper;
+import ru.yandex.practicum.filmorate.storage.database.mappers.GenreRowMapper;
+import ru.yandex.practicum.filmorate.storage.database.mappers.RatingRowMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -27,16 +27,22 @@ import java.util.stream.Collectors;
 public class DbFilmStorage implements FilmStorage {
     private final JdbcTemplate jdbc;
     private final FilmRowMapper mapper;
+    private final GenreRowMapper genreMapper;
+    private final RatingRowMapper ratingMapper;
 
     @Override
     public Collection<Film> getAll() {
         String query = "SELECT * FROM films";
-        return jdbc.query(query, mapper).stream()
+        List<Film> films = jdbc.query(query, mapper).stream()
                 .peek(this::setGenres)
                 .peek(this::setLikes)
-                .peek(this::setGenreName)
-                .peek(this::setMpaName)
-                .collect(Collectors.toList());
+                .toList();
+        // придумал только как оптимизировать с установкой имён жанров и рейтинга:
+        // для каждого фильма заполняются id жанров,
+        // потом уже с помощью одного запроса заполняются для жанров имена и аналогично имена для рейтинга
+        setGenreName(films);
+        setMpaName(films);
+        return films;
     }
 
     @Override
@@ -133,6 +139,23 @@ public class DbFilmStorage implements FilmStorage {
         jdbc.update(query, filmId, userId);
     }
 
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        String query = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rating_id\n" +
+                "FROM films AS f\n" +
+                "LEFT JOIN film_like AS fl ON f.film_id = fl.film_id\n" +
+                "GROUP BY f.film_id, f.name, f.description, f.release_date, f.duration, f.rating_id\n" +
+                "ORDER BY COUNT(fl.user_id) DESC\n" +
+                "LIMIT ?";
+        List<Film> films =  jdbc.query(query, mapper, count).stream()
+                .peek(this::setGenres)
+                .peek(this::setLikes)
+                .toList();
+        setGenreName(films);
+        setMpaName(films);
+        return films;
+    }
+
     private void setGenres(Film film) {
         String query = "SELECT fg.genre_id\n" +
                 " FROM films AS f\n" +
@@ -181,5 +204,29 @@ public class DbFilmStorage implements FilmStorage {
     private void setMpaName(Film film) {
         String query = "SELECT name FROM rating WHERE rating_id = ?";
         film.getMpa().setName(jdbc.queryForObject(query, String.class, film.getMpa().getId()));
+    }
+
+    private void setGenreName(List<Film> films) {
+        List<Genre> genres = jdbc.query("SELECT * FROM genre", genreMapper);
+        for (Film film : films) {
+            for (Genre filmGenre : film.getGenres()) {
+                for (Genre genre : genres) {
+                    if (filmGenre.getId().equals(genre.getId())) {
+                        filmGenre.setName(genre.getName());
+                    }
+                }
+            }
+        }
+    }
+
+    private void setMpaName(List<Film> films) {
+        List<Mpa> ratings = jdbc.query("SELECT * FROM rating", ratingMapper);
+        for (Film film : films) {
+            for (Mpa mpa : ratings) {
+                if (film.getMpa().getId().equals(mpa.getId())) {
+                    film.setMpa(mpa);
+                }
+            }
+        }
     }
 }

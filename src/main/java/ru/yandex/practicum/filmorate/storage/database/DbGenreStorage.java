@@ -31,11 +31,11 @@ public class DbGenreStorage {
     }
 
     public boolean isGenreExist(Long id) {
-        try {
-            getGenreById(id);
-            return true;
-        } catch (NotFoundException exp) {
+        String query = "SELECT EXISTS (SELECT 1 FROM genre WHERE genre_id = ?)";
+        Boolean isExist = jdbc.queryForObject(query, Boolean.class, id);
+        if (isExist == null) {
             return false;
         }
+        return isExist;
     }
 }

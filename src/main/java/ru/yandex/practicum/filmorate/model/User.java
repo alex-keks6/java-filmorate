@@ -23,6 +23,4 @@ public class User {
     private String name;
     @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
     private LocalDate birthday;
-    @JsonIgnore
-    private Set<Long> friends = new HashSet<>();
 }

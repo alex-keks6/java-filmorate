@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserStorage userStorage;
 
-    public UserService(@Qualifier("dbUserStorage") UserStorage userStorage) {
+    public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -61,11 +61,10 @@ public class UserService {
 
     public List<User> getCommonFriends(Long userId, Long otherId) {
         log.info("Получение общих друзей пользователя с userId = {} и пользователя с otherId = {}", userId, otherId);
-        Set<Long> userFriends = userStorage.getUserById(userId).getFriends();
-        Set<Long> otherFriends = userStorage.getUserById(otherId).getFriends();
+        List<User> userFriends = userStorage.getFriendsById(userId);
+        List<User> otherFriends = userStorage.getFriendsById(otherId);
         return userFriends.stream()
                 .filter(otherFriends::contains)
-                .map(userStorage::getUserById)
                 .collect(Collectors.toList());
     }
 

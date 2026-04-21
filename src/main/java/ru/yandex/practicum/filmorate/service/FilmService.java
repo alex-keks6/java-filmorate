@@ -14,7 +14,7 @@ import java.util.List;
 public class FilmService {
     private final FilmStorage filmStorage;
 
-    public FilmService(@Qualifier("dbFilmStorage") FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -44,10 +44,7 @@ public class FilmService {
 
     public List<Film> getPopularFilms(int count) {
         log.info("Получение самых популярных фильмов в размере count = {}", count);
-        return filmStorage.getAll().stream()
-                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
-                .limit(count)
-                .toList();
+        return filmStorage.getPopularFilms(count);
     }
 
     public Film getFilmById(Long id) {

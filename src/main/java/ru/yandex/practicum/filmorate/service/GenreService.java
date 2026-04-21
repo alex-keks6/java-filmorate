@@ -15,10 +15,12 @@ public class GenreService {
     private final DbGenreStorage genreStorage;
 
     public Collection<Genre> getAll() {
+        log.info("Получение списка всех жанров фильмов");
         return genreStorage.getAll();
     }
 
     public Genre getGenreById(Long id) {
+        log.info("Получение жанра с id = {}", id);
         return genreStorage.getGenreById(id);
     }
 

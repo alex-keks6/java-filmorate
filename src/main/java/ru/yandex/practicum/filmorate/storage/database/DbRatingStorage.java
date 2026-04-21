@@ -31,11 +31,11 @@ public class DbRatingStorage {
     }
 
     public boolean isRatingExist(Long id) {
-        try {
-            getRatingById(id);
-            return true;
-        } catch (NotFoundException exp) {
+        String query = "SELECT EXISTS (SELECT 1 FROM rating WHERE rating_id = ?)";
+        Boolean isExist = jdbc.queryForObject(query, Boolean.class, id);
+        if (isExist == null) {
             return false;
         }
+        return isExist;
     }
 }

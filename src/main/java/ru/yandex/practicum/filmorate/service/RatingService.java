@@ -15,10 +15,12 @@ public class RatingService {
     private final DbRatingStorage ratingStorage;
 
     public Collection<Mpa> getAll() {
+        log.info("Получение списка всех возрастных рейтингов фильмов");
         return ratingStorage.getAll();
     }
 
     public Mpa getRatingById(Long id) {
+        log.info("Получение возрастного рейтинга фильма с id = {}", id);
         return ratingStorage.getRatingById(id);
     }
 
