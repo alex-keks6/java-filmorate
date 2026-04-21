@@ -147,7 +147,7 @@ public class DbFilmStorage implements FilmStorage {
                 "GROUP BY f.film_id, f.name, f.description, f.release_date, f.duration, f.rating_id\n" +
                 "ORDER BY COUNT(fl.user_id) DESC\n" +
                 "LIMIT ?";
-        List<Film> films =  jdbc.query(query, mapper, count).stream()
+        List<Film> films = jdbc.query(query, mapper, count).stream()
                 .peek(this::setGenres)
                 .peek(this::setLikes)
                 .toList();

@@ -15,9 +15,7 @@ import ru.yandex.practicum.filmorate.storage.database.mappers.UserRowMapper;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor

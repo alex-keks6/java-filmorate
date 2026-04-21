@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
 import ru.yandex.practicum.filmorate.group.BaseInfo;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 public class User {
