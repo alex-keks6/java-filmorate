@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
 import ru.yandex.practicum.filmorate.group.BaseInfo;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -54,17 +55,17 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film addLike(@PathVariable Long id, @PathVariable Long userId) {
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         filmExist(id);
         userExist(userId);
-        return filmService.addLike(id, userId);
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public Film removeLike(@PathVariable Long id, @PathVariable Long userId) {
+    public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
         filmExist(id);
         userExist(userId);
-        return filmService.removeLike(id, userId);
+        filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
@@ -78,6 +79,19 @@ public class FilmController {
                     ". Релиз не может быть раньше дня рождения кино (28.12.1895)";
             log.debug(errorMessage);
             throw new ValidationException(errorMessage);
+        }
+        if (film.getMpa().getId() != null && (film.getMpa().getId() > 5 || film.getMpa().getId() < 1)) {
+            String errorMessage = "Некорректный идентификатор возрастного рейтинга фильма: " + film.getMpa().getId()
+                    + ".";
+            log.debug(errorMessage);
+            throw new NotFoundException(errorMessage);
+        }
+        for (Genre genre : film.getGenres()) {
+            if (genre.getId() > 6 || genre.getId() < 1) {
+                String errorMessage = "Некорректный идентификатор жанра фильма: " + genre.getId() + ".";
+                log.debug(errorMessage);
+                throw new NotFoundException(errorMessage);
+            }
         }
     }
 

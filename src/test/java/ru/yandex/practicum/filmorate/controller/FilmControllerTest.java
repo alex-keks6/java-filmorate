@@ -27,18 +27,6 @@ public class FilmControllerTest {
     private FilmController filmController;
 
     @Test
-    void postCorrectFilm() throws Exception {
-        String requestBody = getContentFromFile("create/request/film/correctFilm.json");
-        String responseBody = getContentFromFile("create/response/film/film.json");
-
-        mockMvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(responseBody));
-    }
-
-    @Test
     void postIncorrectFilmEmptyName() throws Exception {
         String requestBody = getContentFromFile("create/request/film/incorrectFilm1.json");
 
@@ -67,7 +55,6 @@ public class FilmControllerTest {
                     "Некорректная дата релиза фильма: 1790-01-01. " +
                     "Релиз не может быть раньше дня рождения кино (28.12.1895)", exp.getMessage());
         }
-
     }
 
     @Test

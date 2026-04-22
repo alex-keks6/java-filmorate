@@ -60,26 +60,7 @@ public class UserController {
             log.debug(errorMessage);
             throw new ValidationException(errorMessage);
         }
-        if (userService.isFriendRequestExist(friendId, id)) {
-            String errorMessage = "У пользователя с id = " + friendId
-                    + " уже имеется заявка в друзья от пользователя с id = " + id + ".";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
         userService.addFriend(id, friendId);
-    }
-
-    @PutMapping("/{id}/friends/requests/{friendId}")
-    public void acceptFriend(@PathVariable Long id, @PathVariable Long friendId) {
-        userExist(id);
-        userExist(friendId);
-        if (!userService.isFriendRequestExist(id, friendId)) {
-            String errorMessage = "У пользователя с id = " + id
-                    + " нет заявки в друзья от пользователя с id = " + friendId + ".";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
-        userService.acceptFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
@@ -87,10 +68,10 @@ public class UserController {
         userExist(id);
         userExist(friendId);
         if (!isUsersBeFriends(id, friendId)) {
-            String errorMessage = "У пользователя с id = " + id
+            String message = "У пользователя с id = " + id
                     + " в друзьях нет пользователя с id = " + friendId + ".";
-            log.debug(errorMessage);
-            throw new ValidationException(errorMessage);
+            log.debug(message);
+            return;
         }
         userService.removeFriend(id, friendId);
     }

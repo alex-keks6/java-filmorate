@@ -3,14 +3,13 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.enums.Genre;
-import ru.yandex.practicum.filmorate.enums.Rating;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
 import ru.yandex.practicum.filmorate.group.BaseInfo;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -27,8 +26,6 @@ public class Film {
     private Long duration;
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
-    @NotNull(groups = BaseInfo.class)
-    private Set<Genre> genres = new HashSet<>();
-    @NotNull(groups = BaseInfo.class)
-    private Rating rating;
+    private Set<Genre> genres = new TreeSet<>();
+    private Mpa mpa = new Mpa();
 }

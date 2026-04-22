@@ -1,15 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.enums.FriendStatus;
 import ru.yandex.practicum.filmorate.group.AdvanceInfo;
 import ru.yandex.practicum.filmorate.group.BaseInfo;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 public class User {
@@ -24,6 +20,4 @@ public class User {
     private String name;
     @PastOrPresent(groups = {BaseInfo.class, AdvanceInfo.class})
     private LocalDate birthday;
-    @JsonIgnore
-    private Map<Long, FriendStatus> friends = new HashMap<>();
 }

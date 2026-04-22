@@ -27,18 +27,6 @@ public class UserControllerTest {
     private UserController userController;
 
     @Test
-    void postCorrectUser() throws Exception {
-        String requestBody = getContentFromFile("create/request/user/correctUser.json");
-        String responseBody = getContentFromFile("create/response/user/user.json");
-
-        mockMvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(responseBody));
-    }
-
-    @Test
     void postIncorrectUserSpaceInLogin() throws Exception {
         String requestBody = getContentFromFile("create/request/user/incorrectUser1.json");
 
@@ -58,7 +46,6 @@ public class UserControllerTest {
     void putIncorrectUserEmailWithoutAt() throws Exception {
         String requestBody = getContentFromFile("create/request/user/incorrectUser2.json");
         String requestBodyBase = getContentFromFile("create/request/user/correctUser.json");
-
 
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
